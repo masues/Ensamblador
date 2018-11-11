@@ -93,14 +93,12 @@ public class JFassembly extends javax.swing.JFrame {
         if(this.seleccionado.showDialog(null, "Guardar Archivo") == JFileChooser.APPROVE_OPTION){
             this.archivo = this.seleccionado.getSelectedFile();
             if(archivo.getName().endsWith("lst")){
-                if(admon.guardarArchivo(archivo, this.contenido)){
+                if(admon.guardarArchivo(archivo, this.contenido))
                     JOptionPane.showMessageDialog(null, "Se guardo el archivo con éxito");
-                }else{
+                else
                     JOptionPane.showMessageDialog(null, "Error al guardar archivo");
-                }
-            }else{
+            }else
                 JOptionPane.showMessageDialog(null, "El archivo debe guardarse con extensión .lst");
-            }
         }
     }//GEN-LAST:event_btnGuardarLstActionPerformed
 
