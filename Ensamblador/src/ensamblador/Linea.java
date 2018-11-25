@@ -897,7 +897,7 @@ public class Linea {
                         break;
                 }
             }
-            if(this.operando1.matches("A")&&this.operando2.matches("(\\([0-9A-Fa-fhHbB]+\\))|(\\(\\w\\))")){//LD r,r'
+            if(this.operando1.matches("A")&&this.operando2.matches("(\\([0-9A-Fa-fhHbB]+\\))|(\\(\\w\\))")){//LD A,(nn)
             instruccion="00111010";
             String n;
                 if(this.operando2.matches("\\([0-9A-Fa-fhHbB]+\\)")){
