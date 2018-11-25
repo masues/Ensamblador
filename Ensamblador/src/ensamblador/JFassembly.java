@@ -15,7 +15,90 @@ public class JFassembly extends javax.swing.JFrame {
     File archivo;
     GestionArchivo admon = new GestionArchivo();
     String contenido;
+    String lst="";
+    int lineasTotales;
+    TablaDeSimbolos tablaSimbolos = TablaDeSimbolos.getInstance();
     
+    public void recorrerCadena(){
+        this.lineasTotales=1;
+        //int ini=0,fin;
+        for(int i=0; i<this.contenido.length();i++){
+            if(this.contenido.charAt(i)=='\n'){
+                //fin=i;
+                this.lineasTotales++;
+                //System.out.println(this.contenido.substring(ini, fin));
+                //ini=i+1;
+            }
+        }
+    }
+    
+    public String leerLinea(int numLinea){
+        int ini=0,fin,j=0;
+        for(int i=0; i<this.contenido.length();i++){
+            if(this.contenido.charAt(i)=='\n'){
+                fin=i;
+                j++;
+                if(j==numLinea){
+                    return this.contenido.substring(ini, fin-1);
+                }
+                ini=i+1;
+            }
+        }
+        j++;
+        if(j==this.lineasTotales)
+            return this.contenido.substring(ini, this.contenido.length());
+        return null;
+    }
+    
+    
+    public void primerPasada(){
+        int CL=0;
+        int numLinea=1;
+        while(numLinea<=this.lineasTotales){
+            Linea lineaActual = new Linea(leerLinea(numLinea));
+            if(!lineaActual.cumple){
+                JOptionPane.showMessageDialog(null, "La línea "+numLinea+" no cumple con el formato.");
+                return;
+            }
+            if(lineaActual.etiqueta!=null){//Si hay etiqueta
+                if(!this.tablaSimbolos.nombre.contains(lineaActual.etiqueta)){//Si no está en la tabla de simbolos
+                    this.tablaSimbolos.nombre.add(lineaActual.etiqueta);
+                    this.tablaSimbolos.valor.add(CL);
+                }//Si no, etiqueta definida multiplemente
+            }
+            CL+=lineaActual.longitudDeInstruccion();
+            numLinea++;
+        }
+    }
+    public void SegundaPasada(){
+        int CL=0;
+        int numLinea=1;
+        while(numLinea<=this.lineasTotales){
+            Linea lineaActual = new Linea(leerLinea(numLinea));
+            Integer valorOp1=null;
+            Integer valorOp2=null;
+            if(lineaActual.operando1.matches("\\(?[0-9A-Fa-fhH\\-]+\\)?")){//Si en operando 1 hay etiqueta
+                if(this.tablaSimbolos.nombre.contains(lineaActual.operando1)){//si la etiqueta está en la tabla de símbolos 
+                    valorOp1=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(lineaActual.operando1));//valorOp 1 igual al valor de la etiqueta
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "La etiqueta "+lineaActual.operando1+" no está definida.");
+                if(this.tablaSimbolos.nombre.contains(lineaActual.operando2)){//si la etiqueta está en la tabla de símbolos 
+                    valorOp2=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(lineaActual.operando2));//valorOp 2 igual al valor de la etiqueta
+                }
+                else
+                    JOptionPane.showMessageDialog(null, "La etiqueta "+lineaActual.operando2+" no está definida.");
+                if(lineaActual.longitudDeInstruccion()==null){
+                    JOptionPane.showMessageDialog(null, "La instruccion "+lineaActual.operacion+" no es válida");
+                }
+                else{
+                    CL+=lineaActual.longitudDeInstruccion();
+                }
+                
+            }            
+            numLinea++;
+        }
+    }
     /**
      * Creates new form JFassembly
      */
@@ -34,6 +117,7 @@ public class JFassembly extends javax.swing.JFrame {
 
         btnAbrirAsm = new javax.swing.JButton();
         btnGuardarLst = new javax.swing.JButton();
+        btnPrueba = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ensamblador Z80");
@@ -52,6 +136,13 @@ public class JFassembly extends javax.swing.JFrame {
             }
         });
 
+        btnPrueba.setText("Pruebas");
+        btnPrueba.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPruebaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -62,6 +153,10 @@ public class JFassembly extends javax.swing.JFrame {
                     .addComponent(btnAbrirAsm)
                     .addComponent(btnGuardarLst))
                 .addContainerGap(133, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnPrueba)
+                .addGap(162, 162, 162))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -70,7 +165,9 @@ public class JFassembly extends javax.swing.JFrame {
                 .addComponent(btnAbrirAsm)
                 .addGap(65, 65, 65)
                 .addComponent(btnGuardarLst)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addGap(59, 59, 59)
+                .addComponent(btnPrueba)
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         pack();
@@ -82,6 +179,9 @@ public class JFassembly extends javax.swing.JFrame {
             if(this.archivo.canRead() && this.archivo.getName().endsWith("asm") ){
                 this.contenido = admon.abrirArchivo(archivo);
                 JOptionPane.showMessageDialog(null, "Se abrió el archivo con éxito");
+                this.recorrerCadena();
+                this.primerPasada();
+                System.out.println("Las lineas totales son "+this.lineasTotales);
             }
             else{
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese un archivo con extensión .asm");
@@ -93,14 +193,26 @@ public class JFassembly extends javax.swing.JFrame {
         if(this.seleccionado.showDialog(null, "Guardar Archivo") == JFileChooser.APPROVE_OPTION){
             this.archivo = this.seleccionado.getSelectedFile();
             if(archivo.getName().endsWith("lst")){
-                if(admon.guardarArchivo(archivo, this.contenido))
+                if(admon.guardarArchivo(archivo, this.lst))
                     JOptionPane.showMessageDialog(null, "Se guardo el archivo con éxito");
                 else
                     JOptionPane.showMessageDialog(null, "Error al guardar archivo");
-            }else
+            }else{
                 JOptionPane.showMessageDialog(null, "El archivo debe guardarse con extensión .lst");
+            }
         }
     }//GEN-LAST:event_btnGuardarLstActionPerformed
+
+    private void btnPruebaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPruebaActionPerformed
+        for(int i=0; i<this.tablaSimbolos.nombre.size();i++){
+            System.out.print(this.tablaSimbolos.valor.get(i)+"fV  iN"+this.tablaSimbolos.nombre.get(i)+"fN\n");
+            this.lst.concat(this.tablaSimbolos.valor.get(i)+"  "+this.tablaSimbolos.nombre.get(i)+"  \n");
+        }
+        this.tablaSimbolos.valor.get(8);
+        System.out.print("iniciO:");
+        System.out.print(this.lst);
+        System.out.print(":Fin");
+    }//GEN-LAST:event_btnPruebaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,5 +252,6 @@ public class JFassembly extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrirAsm;
     private javax.swing.JButton btnGuardarLst;
+    private javax.swing.JButton btnPrueba;
     // End of variables declaration//GEN-END:variables
 }
