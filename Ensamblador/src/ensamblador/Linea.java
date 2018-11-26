@@ -1643,12 +1643,13 @@ public class Linea {
                     instruccion=instruccion+n;
                 }
                 else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
-                    n = this.toBinary(this.operando2);
+                    n = this.toBinary(this.operando1);
                     while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
                         n="0"+n;    
                     }
                     n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
                     instruccion=instruccion+n;
+                }
             }
             else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//CP (HL)
                 instruccion="10111110";
@@ -1675,6 +1676,7 @@ public class Linea {
                 d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
                 instruccion=instruccion+d;
             }
+        
         }
         else if ("inc".equals(this.operacion)||"INC".equals(this.operacion)){
             if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//INC r
@@ -1765,7 +1767,7 @@ public class Linea {
                 instruccion="11111101"+"00100011";
             }
         }
-        else if ("dec".equals(this.operacion)||"DEC".equals(this.operacion)){
+        else if("dec".equals(this.operacion)||"DEC".equals(this.operacion)){
             if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//DEC r
                 instruccion="00";
                 switch(this.operando1.charAt(0)){//r
@@ -1868,8 +1870,8 @@ public class Linea {
             longitud=1;
         }
         else if ("scf".equals(this.operacion)||"SCF".equals(this.operacion)){//SCF
-            longitud=1;*/
-        }
+            longitud=1;
+        }*/
         else if ("nop".equals(this.operacion)||"NOP".equals(this.operacion)){//NOP
             instruccion="00000000";
         }
@@ -2008,7 +2010,8 @@ public class Linea {
             }
         }*/
 //////////////// NOVENA HOJA
-
+        if ("".equals(instruccion))
+            return "error";
         int insDec = Integer.parseInt(instruccion, 2);//Pasa de binario a decimal
         return Integer.toHexString(insDec);//pasa de decimal a hexadecimal
     }

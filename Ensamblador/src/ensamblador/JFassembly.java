@@ -24,10 +24,7 @@ public class JFassembly extends javax.swing.JFrame {
         //int ini=0,fin;
         for(int i=0; i<this.contenido.length();i++){
             if(this.contenido.charAt(i)=='\n'){
-                //fin=i;
                 this.lineasTotales++;
-                //System.out.println(this.contenido.substring(ini, fin));
-                //ini=i+1;
             }
         }
     }
@@ -69,36 +66,57 @@ public class JFassembly extends javax.swing.JFrame {
             CL+=lineaActual.longitudDeInstruccion();
             numLinea++;
         }
+        
     }
     public void SegundaPasada(){
         int CL=0;
         int numLinea=1;
+        this.lst=this.lst+"CL    Instruccion          Código Objeto\n";
         while(numLinea<=this.lineasTotales){
             Linea lineaActual = new Linea(leerLinea(numLinea));
-            Integer valorOp1=null;
-            Integer valorOp2=null;
-            if(lineaActual.operando1.matches("\\(?[0-9A-Fa-fhH\\-]+\\)?")){//Si en operando 1 hay etiqueta
-                if(this.tablaSimbolos.nombre.contains(lineaActual.operando1)){//si la etiqueta está en la tabla de símbolos 
-                    valorOp1=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(lineaActual.operando1));//valorOp 1 igual al valor de la etiqueta
+            String valorOp1=null, valorOp2=null;
+            if(lineaActual.operando1!=null){
+                if(!lineaActual.operando1.matches("\\(?[0-9A-Fa-fhHbBIXixYyNZPOpoMm\\+\\-]+\\)?")){//Si en operando 1 hay etiqueta
+                if(this.tablaSimbolos.nombre.contains(lineaActual.operando1)){//si la etiqueta está definida en la tabla
+                    String operandoSinParentesis = lineaActual.operando1.replaceAll("\\(", "");
+                    operandoSinParentesis = operandoSinParentesis.replaceAll("\\)", "");
+                    Integer valorOp1Int=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(operandoSinParentesis));//valorOp 1 igual al valor de la etiqueta
+                    valorOp1=valorOp1Int.toString();
                 }
                 else
                     JOptionPane.showMessageDialog(null, "La etiqueta "+lineaActual.operando1+" no está definida.");
-                if(this.tablaSimbolos.nombre.contains(lineaActual.operando2)){//si la etiqueta está en la tabla de símbolos 
-                    valorOp2=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(lineaActual.operando2));//valorOp 2 igual al valor de la etiqueta
+                } 
+            }           
+            if(lineaActual.operando2!=null){
+                if(!lineaActual.operando2.matches("\\(?[0-9A-Fa-fhHbBIXixYyNZPOpoMm\\+\\-]+\\)?")){
+                if(this.tablaSimbolos.nombre.contains(lineaActual.operando2)){//si la etiqueta está definida en la tabla 
+                    String operandoSinParentesis = lineaActual.operando2.replaceAll("\\(", "");
+                    operandoSinParentesis = operandoSinParentesis.replaceAll("\\)", "");
+                    Integer valorOp2Int=this.tablaSimbolos.valor.get(this.tablaSimbolos.nombre.indexOf(operandoSinParentesis));//valorOp 2 igual al valor de la etiqueta
+                    valorOp2=valorOp2Int.toString();
                 }
                 else
                     JOptionPane.showMessageDialog(null, "La etiqueta "+lineaActual.operando2+" no está definida.");
-                if(lineaActual.longitudDeInstruccion()==null){
-                    JOptionPane.showMessageDialog(null, "La instruccion "+lineaActual.operacion+" no es válida");
                 }
-                else{
-                    CL+=lineaActual.longitudDeInstruccion();
-                }
-                
-            }            
+            }
+            if(lineaActual.longitudDeInstruccion()==null)
+                JOptionPane.showMessageDialog(null, "La instruccion "+lineaActual.operacion+" no es válida");
+            else{
+                this.lst=this.lst+Integer.toHexString(CL)+"    "+lineaActual.operacion+" "+lineaActual.operando1+","+lineaActual.operando2;
+                this.lst=this.lst+"    "+lineaActual.getCodigoObjeto(valorOp1, valorOp2)+"\n";
+                CL+=lineaActual.longitudDeInstruccion();
+            }
             numLinea++;
         }
     }
+    
+    public void guardaTablaSimbolos(){
+        this.lst="Tabla de simbolos\n";
+        for(int i=0; i<this.tablaSimbolos.nombre.size();i++){
+            this.lst=this.lst+Integer.toHexString(this.tablaSimbolos.valor.get(i))+"  "+this.tablaSimbolos.nombre.get(i)+"  \n";
+        }
+    }
+
     /**
      * Creates new form JFassembly
      */
@@ -180,8 +198,11 @@ public class JFassembly extends javax.swing.JFrame {
                 this.contenido = admon.abrirArchivo(archivo);
                 JOptionPane.showMessageDialog(null, "Se abrió el archivo con éxito");
                 this.recorrerCadena();
-                this.primerPasada();
                 System.out.println("Las lineas totales son "+this.lineasTotales);
+                this.primerPasada();
+                this.guardaTablaSimbolos();
+                this.SegundaPasada();
+                //System.out.print(this.lst);
             }
             else{
                 JOptionPane.showMessageDialog(null, "Por favor, ingrese un archivo con extensión .asm");
