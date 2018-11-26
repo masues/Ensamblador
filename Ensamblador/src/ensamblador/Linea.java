@@ -678,7 +678,7 @@ public class Linea {
             }
         }
         else if("ret".equals(this.operacion)||"RET".equals(this.operacion)){
-            if (this.operando1==null&&this.operando2==null){//RET
+            if (this.operando2==null){//RET
                 longitud=1;
             }
             else if (this.operando1.matches("NZ|Z|NC|C|PO|PE|P|M")&&this.operando2==null){//RET cc
@@ -857,7 +857,7 @@ public class Linea {
                 }
                 instruccion=instruccion+"110";
                 String n;
-                if(this.operando2==null&&valorOp2!=null){
+                if(valorOp2!=null){
                     n = this.toBinary(valorOp2);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1110,7 +1110,7 @@ public class Linea {
             else if (this.operando1.matches("\\(HL\\)")&&this.operando2.matches("[0-9a-fA-FhHbB\\+\\-]+|\\w+")){//LD (HL),n
                 instruccion="00110110";
                 String n;
-                if(this.operando2==null&&valorOp2!=null){
+                if(valorOp2!=null){
                     n = this.toBinary(valorOp2);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1138,7 +1138,7 @@ public class Linea {
                 d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
                 instruccion=instruccion+d;
                 String n;
-                if(this.operando2==null&&valorOp2!=null){
+                if(valorOp2!=null){
                     n = this.toBinary(valorOp2);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1166,7 +1166,7 @@ public class Linea {
                 d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
                 instruccion=instruccion+d;
                 String n;
-                if(this.operando2==null&&valorOp2!=null){
+                if(valorOp2!=null){
                     n = this.toBinary(valorOp2);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1192,7 +1192,7 @@ public class Linea {
             else if(this.operando1.matches("A")&&this.operando2.matches("(\\([0-9a-fA-FhHbB\\-]+\\))|(\\(\\w\\))")){//LD A,(nn)
                 instruccion="00111010";
                 String n;
-                if(this.operando2==null&&valorOp2!=null){
+                if(valorOp2!=null){
                     n = valorOp2.replaceAll("\\(", "");
                     n = n.replaceAll("\\)","");
                     n = this.toBinary(n);
@@ -1221,10 +1221,10 @@ public class Linea {
 	        else if(this.operando1.matches("\\(DE\\)")&&this.operando2.matches("A")){//LD (DE),A
                 instruccion="00010010";
             }
-            else if(this.operando1.matches("(\\([0-9a-fA-FhHbB\\-]+\\))|(\\(\\w\\))")&&this.operando2.matches("A")){//LD (nn),A
+            else if(this.operando1.matches("(\\([0-9a-fA-FhHbB\\-]+\\))|(\\(\\w+\\))")&&this.operando2.matches("A")){//LD (nn),A
                 instruccion="00110010";
                 String n;
-                if(this.operando1==null&&valorOp1!=null){
+                if(valorOp1!=null){
                     n = valorOp1.replaceAll("\\(", "");
                     n = n.replaceAll("\\)","");
                     n = this.toBinary(n);
@@ -1298,7 +1298,7 @@ public class Linea {
             else if(this.operando1.matches("[0-9a-fA-FhHbB\\+\\-]+")&&this.operando2==null){//ADD n   
                 instruccion="11000110";
                 String n;
-                if(this.operando1==null&&valorOp1!=null){
+                if(valorOp1!=null){
                     n = this.toBinary(valorOp1);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1444,7 +1444,7 @@ public class Linea {
             else if(this.operando1.matches("[0-9A-Fa-fhHbB\\+\\-]+")&&this.operando2==null){//ADC n
                 instruccion="11001110";
                 String n;
-                if(this.operando1==null&&valorOp1!=null){
+                if(valorOp1!=null){
                     n = this.toBinary(valorOp1);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1634,7 +1634,7 @@ public class Linea {
             else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//CP n
                 instruccion="11111110";
                 String n;
-                if(this.operando1==null&&valorOp1!=null){
+                if(valorOp1!=null){
                     n = this.toBinary(valorOp1);
                     while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
                         n="0"+n;
@@ -1894,7 +1894,120 @@ public class Linea {
             }
         }*/
 /////////////////// QUINTA HOJA
-        
+        else if("jp".equals(this.operacion)||"JP".equals(this.operacion)){
+            if (this.operando1.matches("([0-9a-fA-FhHbB\\-]+)|\\w+")&&this.operando2==null){//JP nn
+                instruccion="11000011";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<16){// en caso de que el número sea menor a 16, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-16, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n.substring(8);
+                    instruccion=instruccion+n.substring(0, 8);
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<16){// en caso de que el número sea menor a 16 bits, pone ceros a la izquierda
+                        n="0"+n;    
+                    }
+                    n=n.substring(n.length()-16, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n.substring(8);
+                    instruccion=instruccion+n.substring(0, 8);
+                }
+
+            }
+            else if (this.operando1.matches("NZ|Z|NC|C|PO|PE|P|M")&&this.operando2.matches("([0-9a-fA-FhHbB\\-]+)|\\w+")){//JP cc,nn,
+                instruccion="11";
+                switch(this.operando1){//cc
+                    case "NZ"://no cero
+                    case "nz":
+                        instruccion=instruccion+"000";
+                        break;
+                    case "Z"://cero
+                    case "z":
+                        instruccion=instruccion+"001";
+                        break;
+                    case "NC"://no arrastre
+                    case "nc":
+                        instruccion=instruccion+"010";
+                        break;
+                    case "C"://arrastre
+                    case "c":
+                        instruccion=instruccion+"011";
+                        break;
+                    case "PO"://polaridad impar
+                    case "po":
+                        instruccion=instruccion+"100";
+                        break;
+                    case "PE"://polaridad par
+                    case "pe":
+                        instruccion=instruccion+"101";
+                        break;
+                    case "P"://signo positivo
+                    case "p":
+                        instruccion=instruccion+"110";
+                        break;
+                    case "M"://signo negativo
+                    case "m":
+                        instruccion=instruccion+"111";
+                        break;
+                }
+                instruccion=instruccion+"010";
+                String n;
+                if(valorOp2!=null){
+                    n = this.toBinary(valorOp2);
+                    while(n.length()<16){// en caso de que el número sea menor a 16, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-16, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n.substring(8);
+                    instruccion=instruccion+n.substring(0, 8);
+                }
+                else if(this.operando2.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando2);
+                    while(n.length()<16){// en caso de que el número sea menor a 16 bits, pone ceros a la izquierda
+                        n="0"+n;    
+                    }
+                    n=n.substring(n.length()-16, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n.substring(8);
+                    instruccion=instruccion+n.substring(0, 8);
+                }
+            }
+            else if (this.operando1.matches("\\(HL\\)")&&this.operando2==null){//JP (HL)
+                instruccion="11101001";
+            }
+            else if (this.operando1.matches("\\(IX\\)")&&this.operando2==null){//JP (IX)
+                instruccion="11011101"+"11101001";
+            }
+            else if (this.operando1.matches("\\(IY\\)")&&this.operando2==null){//JP (IY)
+                instruccion="11111101"+"11101001";
+            }
+        }
+        /*else if("jr".equals(this.operacion)||"JR".equals(this.operacion)){
+            if (this.operando1.matches("[\\-0-9hHbB]+|\\w+")&&this.operando2==null){//JR e
+                longitud=2;
+            }
+            else if (this.operando1.matches("C")&&this.operando2.matches("[\\-0-9hHbB]+|\\w+")){//JR C,e
+                longitud=2;
+            }
+            else if (this.operando1.matches("NC")&&this.operando2.matches("[\\-0-9hHbB]+|\\w+")){//JR NC,e
+                longitud=2;
+            }
+            else if (this.operando1.matches("Z")&&this.operando2.matches("[\\-0-9hHbB]+|\\w+")){//JR Z,e
+                longitud=2;
+            }
+            else if (this.operando1.matches("NZ")&&this.operando2.matches("[\\-0-9hHbB]+|\\w+")){//JR NZ,e
+                longitud=2;
+            }
+        }
+        else if("djn".equals(this.operacion)||"DJN".equals(this.operacion)){
+            if (this.operando1.matches("Z")&&this.operando2.matches("[\\-0-9hHbB]+|\\w+")){//DJN Z,e
+                longitud=2;
+            }
+        }*/
+//////////////// NOVENA HOJA
 
         int insDec = Integer.parseInt(instruccion, 2);//Pasa de binario a decimal
         return Integer.toHexString(insDec);//pasa de decimal a hexadecimal
