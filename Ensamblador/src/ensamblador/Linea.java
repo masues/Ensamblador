@@ -1402,9 +1402,10 @@ public class Linea {
                     case "sp":
                         instruccion=instruccion+"11";
                         break;
+                    }
+                    instruccion=instruccion+"1001";
                 }
-                instruccion=instruccion+"1001";
-            }
+            }    
         }
         else if ("adc".equals(this.operacion)||"ADC".equals(this.operacion)){
             if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//ADC r
@@ -1503,8 +1504,9 @@ public class Linea {
                     case "sp":
                         instruccion=instruccion+"11";
                         break;
+                    }
+                    instruccion=instruccion+"1010";
                 }
-                instruccion=instruccion+"1010";
             }
         }
         /*else if ("sub".equals(this.operacion)||"SUB".equals(this.operacion)){
@@ -1676,51 +1678,224 @@ public class Linea {
         }
         else if ("inc".equals(this.operacion)||"INC".equals(this.operacion)){
             if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//INC r
-                longitud=1;
+                instruccion="00";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+                instruccion=instruccion+"100";
             }
             else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//INC (HL)
-                longitud=1;
+                instruccion="00110100";
             }
             else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//INC (IX+d)
-                longitud=3;
+                instruccion="11011101"+"00110100";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;    
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
             }
             else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//INC (IY+d)
-                longitud=3;
+                instruccion="11111101"+"00110100";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;    
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
             }
             else if(this.operando1.matches("BC|DE|HL|SP")&&this.operando2==null){//INC ss       Aritmético 16 bits
-                longitud=1;
+                instruccion="00";
+                switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"0011";
             } 
             else if(this.operando1.matches("IX")&&this.operando2==null){//INC IX
-                longitud=2;
+                instruccion="11011101"+"00100011";
             }
             else if(this.operando1.matches("IY")&&this.operando2==null){//INC IY
-                longitud=2;
+                instruccion="11111101"+"00100011";
             }
         }
         else if ("dec".equals(this.operacion)||"DEC".equals(this.operacion)){
             if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//DEC r
-                longitud=1;
+                instruccion="00";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+                instruccion=instruccion+"101";
             }
             else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//DEC (HL)
-                longitud=1;
+                instruccion="00110101";
             }
             else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//DEC (IX+d)
-                longitud=3;
+                instruccion="11011101"+"00110101";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;    
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
             }
             else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//DEC (IY+d)
-                longitud=3;
+                instruccion="11111101"+"00110101";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;    
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
             }
             else if(this.operando1.matches("BC|DE|HL|SP")&&this.operando2==null){//DEC ss      Aritmético 16 bits
-                longitud=1;
+                instruccion="00";
+                switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"1011";
             }
             else if(this.operando1.matches("IX")&&this.operando2==null){//DEC IX
-                longitud=2;
+                instruccion="11011101"+"00101011";
             }
             else if(this.operando1.matches("IY")&&this.operando2==null){//DEC IY
-                longitud=2;
+                instruccion="11111101"+"00101011";
             }
         }
 /////////////// CUARTA Y SEXTA HOJA. Grupo aritmético de 8 y de 16 bits
+        /*else if ("daa".equals(this.operacion)||"DAA".equals(this.operacion)){//DAA
+            longitud=1;
+        }
+        else if ("cpl".equals(this.operacion)||"CPL".equals(this.operacion)){//CPL
+            longitud=1;
+        }
+        else if ("neg".equals(this.operacion)||"NEG".equals(this.operacion)){//NEG
+            longitud=2;
+        }
+        else if ("ccf".equals(this.operacion)||"CCF".equals(this.operacion)){//CCF
+            longitud=1;
+        }
+        else if ("scf".equals(this.operacion)||"SCF".equals(this.operacion)){//SCF
+            longitud=1;*/
+        }
+        else if ("nop".equals(this.operacion)||"NOP".equals(this.operacion)){//NOP
+            instruccion="00000000";
+        }
+        else if ("halt".equals(this.operacion)||"HALT".equals(this.operacion)){//HALT
+            instruccion="01110110";
+        }
+        /*else if ("di".equals(this.operacion)||"DI".equals(this.operacion)){//DI
+            longitud=1;
+        }
+        else if ("ei".equals(this.operacion)||"EI".equals(this.operacion)){//EI
+            longitud=1;
+        }
+        else if ("im".equals(this.operacion)||"IM".equals(this.operacion)){//IM
+            if(this.operando1.matches("0")&&this.operando2==null){//IM 0
+                longitud=2;
+            }
+            else if(this.operando1.matches("1")&&this.operando2==null){//IM 1
+                longitud=2;
+            }
+            else if(this.operando1.matches("2")&&this.operando2==null){//IM 2
+                longitud=2;
+            }
+        }*/
+/////////////////// QUINTA HOJA
+        
+
         int insDec = Integer.parseInt(instruccion, 2);//Pasa de binario a decimal
         return Integer.toHexString(insDec);//pasa de decimal a hexadecimal
     }
