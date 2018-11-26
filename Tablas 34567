@@ -1,0 +1,1095 @@
+      else if ("ex".equals(this.operacion)||"EX".equals(this.operacion)){
+          if(this.operando1.matches("DE")&&this.operando2.matches("HL")){             //EX DE,HL
+      	instruccion="11101011";
+           }
+           else if(this.operando1.matches("AF")&&this.operando2.matches("AF")){     //EX AF,AF
+              instruccion="00001000";
+           }
+           else if(this.operando1.matches("\\(SP\\)")&&this.operando2.matches("HL")){ //EX (SP),HL
+              instruccion="11100011";
+           }
+           else if(this.operando1.matches("\\(SP\\)")&&this.operando2.matches("IX")){ //EX (SP),IX
+              instruccion="11011101"+"11100011";
+           }
+           else if(this.operando1.matches("\\(SP\\)")&&this.operando2.matches("IY")){ //EX (SP),IY
+              instruccion="11111101"+"11100011";
+           }
+      }
+      else if ("ldi".equals(this.operacion)||"LDI".equals(this.operacion)){     //LDI
+        instruccion="1110110110100000";
+      }
+      else if ("ldir".equals(this.operacion)||"LDIR".equals(this.operacion)){   //LDIR
+        instruccion="1110110110110000";
+      }
+      else if ("ldd".equals(this.operacion)||"LDD".equals(this.operacion)){     //LDD
+        instruccion="1110110110101000";
+      }
+      else if ("lddr".equals(this.operacion)||"LDDR".equals(this.operacion)){   //LDDR
+        instruccion="1110110110111000";
+      }
+      else if ("cpi".equals(this.operacion)||"CPI".equals(this.operacion)){     //CPI
+        instruccion="1110110110100001";
+      }
+      else if ("cpir".equals(this.operacion)||"CPIR".equals(this.operacion)){     //CPIR
+        instruccion="1110110110110001";
+      }
+      else if ("cpd".equals(this.operacion)||"CPD".equals(this.operacion)){     //CPD
+        instruccion="1110110110101001";
+      }
+      else if ("cpdr".equals(this.operacion)||"CPDR".equals(this.operacion)){     //CPDR
+        instruccion="1110110110111001";
+      }
+////////////////TERCERA TABLA
+      else if ("daa".equals(this.operacion)||"DAA".equals(this.operacion)){     //DAA
+        instruccion="00100111";
+      }
+      else if ("cpl".equals(this.operacion)||"CPL".equals(this.operacion)){     //CPL
+        instruccion="00101111";
+      }
+      else if ("neg".equals(this.operacion)||"NEG".equals(this.operacion)){     //NEG
+        instruccion="1110110101000100";
+      }
+      else if ("ccf".equals(this.operacion)||"CCF".equals(this.operacion)){     //CCF
+        instruccion="00111111";
+      }
+      else if ("scf".equals(this.operacion)||"SCF".equals(this.operacion)){     //SCF
+        instruccion="00110111";
+      }
+      else if ("nop".equals(this.operacion)||"NOP".equals(this.operacion)){     //NOP
+        instruccion="00000000";
+      }
+      else if ("halt".equals(this.operacion)||"HALT".equals(this.operacion)){    //HALT
+        instruccion="01110110";
+      }
+      else if ("di".equals(this.operacion)||"DI".equals(this.operacion)){       //DI
+        instruccion="11110011";
+      }
+      else if ("ei".equals(this.operacion)||"EI".equals(this.operacion)){       //EI
+        instruccion="11111011";
+      }
+      else if ("im".equals(this.operacion)||"IM".equals(this.operacion)){     //IM
+        if (this.operando1.matches("0|1|2")&&this.operando2==null){
+          switch(this.operando1){
+            case "0":                                                           //IM 0
+              instruccion="1110110101000110";
+            break;
+            case "1":                                                           //IM 1
+              instruccion="1110110101010110";
+            break;
+            case "2":                                                           //IM 2
+              instruccion="1110110101011110";
+            break;
+          }
+        }
+      }
+////////////////QUINTA TABLA
+else if ("add".equals(this.operacion)||"ADD".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//ADD r
+                instruccion="10000";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9a-fA-FhHbB\\+\\-]+")&&this.operando2==null){//ADD n
+                instruccion="11000110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//ADD (HL)
+                instruccion="10000110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//ADD (IX+d)
+                instruccion="11011101"+"10000110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//ADD (IY+d)
+                instruccion="11111101"+"10000110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("HL")&&this.operando2.matches("BC|DE|HL|SP")){//ADD HL,ss     Aritmético de 16 bits
+                instruccion="00";
+                switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"1001";
+            }
+            else if(this.operando1.matches("IX")&&this.operando2.matches("BC|DE|IX|SP")){//ADD IX,pp
+                instruccion="11011101"+"00";
+                switch(this.operando2){//pp
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "IX":
+                    case "ix":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"1001";
+            }
+            else if(this.operando1.matches("IY")&&this.operando2.matches("BC|DE|IY|SP")){//ADD IY,rr
+                instruccion="11111101"+"00";
+                switch(this.operando2){//rr
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "IY":
+                    case "iy":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                    }
+                    instruccion=instruccion+"1001";
+                }
+            }
+        }
+        else if ("adc".equals(this.operacion)||"ADC".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//ADC r
+                instruccion="10001";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\+\\-]+")&&this.operando2==null){//ADC n
+                instruccion="11001110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//ADC (HL)
+                instruccion="10001110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//ADC (IX+d)
+                instruccion="11011101"+"10001110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//ADC (IY+d)
+                instruccion="11111101"+"10000110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("HL")&&this.operando2.matches("BC|DE|HL|SP")){//ADC HL,ss    Aritmético 16 bits
+                instruccion="11101101"+"01";
+                 switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                    }
+                    instruccion=instruccion+"1010";
+                }
+            }
+        }
+        else if ("sub".equals(this.operacion)||"SUB".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//SUB r
+                instruccion="10010";
+		switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//SUB n
+                instruccion="11010110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            	}
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//SUB (HL)
+                instruccion="10010110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//SUB (IX+d)
+                instruccion="11011101"+"10010110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//SUB (IY+d)
+                instruccion="11111101"+"10010110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+        }
+        else if ("sbc".equals(this.operacion)||"SBC".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//SBC r
+                instruccion="10011";
+		switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//SBC n
+                instruccion="11011110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            	}
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//SBC (HL)
+                instruccion="10011110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//SBC (IX+d)
+                instruccion="11011101"+"10011110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//SBC (IY+d)
+                instruccion="11111101"+"10011110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("HL")&&this.operando2.matches("BC|DE|HL|SP")){//SBC HL,ss
+                instruccion="11101101"+"01";
+                 switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                    }
+                    instruccion=instruccion+"0010";
+                }
+            }
+        }
+        else if ("and".equals(this.operacion)||"AND".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//AND r
+                instruccion="10100";
+		switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//AND n
+                instruccion="11100110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            	}
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//AND (HL)
+                instruccion="10100110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//AND (IX+d)
+                instruccion="11011101"+"10100110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//AND (IY+d)
+                instruccion="11111101"+"10100110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+        }
+        else if ("or".equals(this.operacion)||"OR".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//OR r
+                instruccion="10110";
+		switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//OR n
+                instruccion="11110110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            	}
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//OR (HL)
+                instruccion="10110110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//OR (IX+d)
+                instruccion="11011101"+"10110110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//OR (IY+d)
+                instruccion="11111101"+"10110110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+        }
+        else if ("xor".equals(this.operacion)||"XOR".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//XOR r
+                instruccion="10101";
+		switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//XOR n
+                instruccion="11101110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            	}
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//XOR (HL)
+                instruccion="10101110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//XOR (IX+d)
+                instruccion="11011101"+"10101110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//XOR (IY+d)
+                instruccion="11111101"+"10101110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+        }
+        else if ("cp".equals(this.operacion)||"CP".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//CP r
+                instruccion="10111";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+            }
+            else if(this.operando1.matches("[0-9A-Fa-fhHbB\\-]+")&&this.operando2==null){//CP n
+                instruccion="11111110";
+                String n;
+                if(valorOp1!=null){
+                    n = this.toBinary(valorOp1);
+                    while(n.length()<8){// en caso de que el número sea menor a 8, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+                }
+                else if(this.operando1.matches("[0-9a-fA-FhHbB\\-]+")){
+                    n = this.toBinary(this.operando2);
+                    while(n.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                        n="0"+n;
+                    }
+                    n=n.substring(n.length()-8, n.length());//en caso de que sea mayor, le quita números a la izquierda
+                    instruccion=instruccion+n;
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//CP (HL)
+                instruccion="10111110";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//CP (IX+d)
+                instruccion="11011101"+"10111110";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//CP (IY+d)
+                instruccion="11111101"+"10111110";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+        }
+        else if ("inc".equals(this.operacion)||"INC".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//INC r
+                instruccion="00";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+                instruccion=instruccion+"100";
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//INC (HL)
+                instruccion="00110100";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//INC (IX+d)
+                instruccion="11011101"+"00110100";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//INC (IY+d)
+                instruccion="11111101"+"00110100";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("BC|DE|HL|SP")&&this.operando2==null){//INC ss       Aritmético 16 bits
+                instruccion="00";
+                switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"0011";
+            }
+            else if(this.operando1.matches("IX")&&this.operando2==null){//INC IX
+                instruccion="11011101"+"00100011";
+            }
+            else if(this.operando1.matches("IY")&&this.operando2==null){//INC IY
+                instruccion="11111101"+"00100011";
+            }
+        }
+        else if ("dec".equals(this.operacion)||"DEC".equals(this.operacion)){
+            if(this.operando1.matches("[A-E]|H|L")&&this.operando2==null){//DEC r
+                instruccion="00";
+                switch(this.operando1.charAt(0)){//r
+                    case 'A':
+                    case 'a':
+                        instruccion=instruccion+"111";
+                        break;
+                    case 'b':
+                    case 'B':
+                        instruccion=instruccion+"000";
+                        break;
+                    case 'C':
+                    case 'c':
+                        instruccion=instruccion+"001";
+                        break;
+                    case 'd':
+                    case 'D':
+                        instruccion=instruccion+"010";
+                        break;
+                    case 'e':
+                    case 'E':
+                        instruccion=instruccion+"011";
+                        break;
+                    case 'h':
+                    case 'H':
+                        instruccion=instruccion+"100";
+                        break;
+                    case 'l':
+                    case 'L':
+                        instruccion=instruccion+"101";
+                        break;
+                }
+                instruccion=instruccion+"101";
+            }
+            else if(this.operando1.matches("\\(HL\\)")&&this.operando2==null){//DEC (HL)
+                instruccion="00110101";
+            }
+            else if(this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//DEC (IX+d)
+                instruccion="11011101"+"00110101";
+                String d = this.operando1.replaceAll("\\(IX", "");//quita la parte (IX
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\)")&&this.operando2==null){//DEC (IY+d)
+                instruccion="11111101"+"00110101";
+                String d = this.operando1.replaceAll("\\(IY", "");//quita la parte (IY
+                d = d.replaceAll("\\)", "");//quita la parte ). Al final queda +-d
+                d = this.toBinary(d);
+                while(d.length()<8){// en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                    d="0"+d;
+                }
+                d=d.substring(d.length()-8, d.length());//en caso de que sea mayor, le quita números a la izquierda
+                instruccion=instruccion+d;
+            }
+            else if(this.operando1.matches("BC|DE|HL|SP")&&this.operando2==null){//DEC ss      Aritmético 16 bits
+                instruccion="00";
+                switch(this.operando2){//ss
+                    case "BC":
+                    case "bc":
+                        instruccion=instruccion+"00";
+                        break;
+                    case "DE":
+                    case "de":
+                        instruccion=instruccion+"01";
+                        break;
+                    case "HL":
+                    case "hl":
+                        instruccion=instruccion+"10";
+                        break;
+                    case "SP":
+                    case "sp":
+                        instruccion=instruccion+"11";
+                        break;
+                }
+                instruccion=instruccion+"1011";
+            }
+            else if(this.operando1.matches("IX")&&this.operando2==null){//DEC IX
+                instruccion="11011101"+"00101011";
+            }
+            else if(this.operando1.matches("IY")&&this.operando2==null){//DEC IY
+                instruccion="11111101"+"00101011";
+            }
+        }
+/////////////// CUARTA Y SEXTA HOJA. Grupo aritmético de 8 y de 16 bits
+      else if ("rlca".equals(this.operacion)||"RLCA".equals(this.operacion)){   //RLCA
+        instruccion="00000111";
+      }
+      else if ("rla".equals(this.operacion)||"RLA".equals(this.operacion)){     //RLA
+        instruccion="00010111";
+      }
+      else if ("rrca".equals(this.operacion)||"RRCA".equals(this.operacion)){   //RRCA
+        instruccion="00001111";
+      }
+      else if ("rra".equals(this.operacion)||"RRA".equals(this.operacion)){     //RRA
+        instruccion="00011111";
+      }
+      else if ("rlc".equals(this.operacion)||"RLC".equals(this.operacion)){     //RLC
+        if (this.operando1.matches("[A-E|H|L]")&&this.operando2==null){         //r
+          switch(this.operando1.charAt(0)){
+              instruccion="1100101100000";
+              case 'A':
+              case 'a':
+                  instruccion=instruccion+"111";
+                  break;
+              case 'b':
+              case 'B':
+                  instruccion=instruccion+"000";
+                  break;
+              case 'C':
+              case 'c':
+                  instruccion=instruccion+"001";
+                  break;
+              case 'd':
+              case 'D':
+                  instruccion=instruccion+"010";
+                  break;
+              case 'e':
+              case 'E':
+                  instruccion=instruccion+"011";
+                  break;
+              case 'h':
+              case 'H':
+                  instruccion=instruccion+"100";
+                  break;
+              case 'l':
+              case 'L':
+                  instruccion=instruccion+"101";
+                  break;
+          }
+        }
+          else if (this.operando1.matches("\\(HL\\)")&&this.operando2==null){     // (HL)
+            instruccion="1100101100000110";
+            }
+          else if (this.operando1.matches("\\(IX(\\+|\\-)[0-9]+\\")&&this.operando2==null){     // (IX + d)
+            instruccion="1101110111001011";
+            String d = this.operando1.replaceAll("\\(IX", "");                    //quita la parte (IX
+                  d = d.replaceAll("\\)", "");                                    //quita la parte ). Al final queda +-d
+                  d = this.toBinary(d);
+                  while(d.length()<8){                                            // en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                      d="0"+d;
+                  }
+                  d=d.substring(d.length()-8, d.length());                        //en caso de que sea mayor, le quita números a la izquierda
+                  instruccion=instruccion+d;
+              instruccion=instruccion+"00000110";
+            }
+          else if (this.operando1.matches("\\(IY(\\+|\\-)[0-9]+\\")&&this.operando2==null){     // (IY + d)
+            instruccion="1111110111001011";
+            String d = this.operando1.replaceAll("\\(IY", "");                    //quita la parte (IX
+                  d = d.replaceAll("\\)", "");                                    //quita la parte ). Al final queda +-d
+                  d = this.toBinary(d);
+                  while(d.length()<8){                                            // en caso de que el número sea menor a 8 bits, pone ceros a la izquierda
+                      d="0"+d;
+                  }
+                  d=d.substring(d.length()-8, d.length());                        //en caso de que sea mayor, le quita números a la izquierda
+                  instruccion=instruccion+d;
+              instruccion=instruccion+"00000110";
+            }
+      }
+      else if ("rld".equals(this.operacion)||"RLD".equals(this.operacion)){     //RLD
+        instruccion="1110110101101111";
+      }
+      else if ("rrd".equals(this.operacion)||"RRD".equals(this.operacion)){     //RRD
+        instruccion="1110110101100111";
+      }
+////////////////SEPTIMA TABLA
